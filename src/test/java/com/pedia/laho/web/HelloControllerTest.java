@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = HelloController.class)
-public class HelloConrollerTest {
+public class HelloControllerTest {
 
     @Autowired
     private MockMvc mvc;
