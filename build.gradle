@@ -24,12 +24,15 @@ dependencies {
     testImplementation 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation(platform("org.junit:junit-bom:5.8.2"))
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher") {
-        because("Only needed to run tests in a version of IntelliJ IDEA that bundles older versions")
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('com.h2database:h2')
+
+    testImplementation(platform('org.junit:junit-bom:5.8.2'))
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher') {
+        because('Only needed to run tests in a version of IntelliJ IDEA that bundles older versions')
     }
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine')
 }
 
 test {
