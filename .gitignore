@@ -1,3 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
 .gradle
 .idea
+
+resources/application-kmdb-api-key.properties
