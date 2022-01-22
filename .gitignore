@@ -2,4 +2,4 @@
 .gradle
 .idea
 
-application-kmdb-api-key.properties
+application-api-key.properties
