@@ -17,6 +17,7 @@ dependencies {
     testImplementation ('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'junit', module: 'junit' //junit 4 제외시키기
     }
+    ext['tomcat.version'] = '9.0.26'
 
     // lombok
     implementation 'org.projectlombok:lombok'
@@ -26,6 +27,8 @@ dependencies {
 
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation('com.h2database:h2:1.4.197') //test용 DB
+
+    implementation('org.springframework.boot:spring-boot-starter-mustache')
 
     testImplementation(platform('org.junit:junit-bom:5.8.2'))
     testRuntimeOnly('org.junit.platform:junit-platform-launcher') {
