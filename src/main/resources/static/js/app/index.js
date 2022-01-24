@@ -14,11 +14,20 @@ var main = {
         $.ajax({
             type: 'GET',
             url: '/api/search',
-            data: data
-        }).done(function () {
-            alert('검색완료');
-        }).fail(function (error) {
-           alert(JSON.stringify(error));
+            data: data,
+            dataType: "json",
+            async: false,
+            success: function(data) {
+                $.each(data, function (idx, val) {
+                    $('body').append(val.title).append("\n")
+                        .append(val.prodYear).append("\n")
+                        .append(val.nation).append("\n")
+                        .append(val.posters).append("\n");
+                });
+            },
+            error: function() {
+                alert("값을 가져오지 못했습니다.");
+            }
         });
     }
 };
