@@ -29,7 +29,7 @@ dependencies {
     implementation('com.h2database:h2:1.4.197') //test용 DB
 
     implementation('org.springframework.boot:spring-boot-starter-mustache')
-    implementation('com.googlecode.json-simple:json-simple:1.1.1')
+    implementation ('com.google.code.gson:gson:2.8.7')
 
     testImplementation(platform('org.junit:junit-bom:5.8.2'))
     testRuntimeOnly('org.junit.platform:junit-platform-launcher') {
