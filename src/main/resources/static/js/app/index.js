@@ -19,10 +19,10 @@ var main = {
             async: false,
             success: function(data) {
                 $.each(data, function (idx, val) {
-                    $('body').append(val.title).append("\n")
-                        .append(val.prodYear).append("\n")
-                        .append(val.nation).append("\n")
-                        .append(val.posters).append("\n");
+                    $('body').append(val.title).append("<br>")
+                        .append(val.prodYear).append("<br>")
+                        .append(val.nation).append("<br>")
+                        .append(val.posters).append("<br>");
                 });
             },
             error: function() {
