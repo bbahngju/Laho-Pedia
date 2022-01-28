@@ -4,10 +4,7 @@ import com.google.gson.*;
 import com.pedia.laho.web.dto.SearchResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @PropertySource("classpath:application-api-key.properties")
-@Controller
+@RestController
 public class IndexController {
     private static Logger logger = Logger.getLogger(IndexController.class.getName());
 
@@ -28,7 +26,7 @@ public class IndexController {
 
     @GetMapping("/")
     public String index() {
-        return "index";
+        return "Hello, LAHO-PEDIA";
     }
 
     @GetMapping("/api/search")
