@@ -1,0 +1,25 @@
+.App-logo {
+  font-family: "Malgun Gothic";
+  font-size: xx-large;
+  font-weight: bold;
+
+  padding-left: 10px;
+}
+
+header {
+  background: bisque;
+}
+
+nav.Nav {
+  padding: 10px 0px 40px 0px;
+}
+
+nav.Nav ul li {
+  float: right;
+  padding: 0px 10px;
+  display: inline-block;
+}
+
+.page {
+  padding: 30px;
+}
