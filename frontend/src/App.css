@@ -1,29 +1,25 @@
-.App {
-  text-align: center;
+.App-logo {
+  font-family: "Malgun Gothic";
+  font-size: xx-large;
+  font-weight: bold;
+
+  padding-left: 10px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+header {
+  background: bisque;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+nav.Nav {
+  padding: 10px 0px 40px 0px;
 }
 
 nav.Nav ul li {
   float: right;
-  padding: 0;
+  padding: 0px 10px;
   display: inline-block;
 }
-.App-link {
-  color: #61dafb;
+
+.page {
+  padding: 30px;
 }

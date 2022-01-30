@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -31,11 +33,15 @@ public class IndexController {
 
     @GetMapping("/api/search")
     @ResponseBody
-    public List<SearchResponseDto> search(@RequestParam("keyWord") String keyWord) throws IOException {
+    public String search(HttpServletRequest request) throws IOException {
+        logger.info("---------------start search keyWord!---------------");
+
+        String keyWord = request.getParameter("keyWord").replaceAll(" ","");
         String urlBuilder = "http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2" +
                 "&detail=" + "Y" +
                 "&query=" + "\"" + keyWord + "\"" +
                 "&ServiceKey=" + kmdbKey;
+
         URL url = new URL(urlBuilder);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -61,12 +67,10 @@ public class IndexController {
         rd.close();
         conn.disconnect();
 
-        logger.info(sb.toString());
-
         return searchParsing(sb.toString());
     }
 
-    public List<SearchResponseDto> searchParsing(String jString) {
+    public String searchParsing(String jString) {
         List<SearchResponseDto> result = new ArrayList<>();
 
         JsonObject jObject = JsonParser.parseString(jString).getAsJsonObject();
@@ -86,6 +90,8 @@ public class IndexController {
             result.add(searchResponseDto);
         }
 
-        return result;
+        String searchResult = new Gson().toJson(result);
+        logger.info(searchResult);
+        return searchResult;
     }
 }

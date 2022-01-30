@@ -1,46 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Login from "./login";
-import Mypage from "./myPage";
+import Login from "./page/Login";
+import MyPage from "./page/MyPage";
 import axios from "axios";
-import {BrowserRouter as Routers, Route, Switch, Link} from "react-router-dom";
+import {Route, Switch, Link} from "react-router-dom";
+import Header from "./layout/Header";
+import Main from "./page/Main";
+import 'antd/dist/antd.css';
 
 function App() {
     const baseUrl = "http://localhost:8080"
-    const [input, setInput] = useState("Hello MainPage!");
+    const [movies, setMovies] = useState();
 
 
-    useEffect(() => {
-        async function fetchData() {
-            const response = await axios.get(baseUrl + "/");
-            setInput(response.data);
+    async function handleSearchClick(searchKeyword) {
+        try {
+            const searchResponse = await axios.get( baseUrl + "/api/search", {
+                params : {
+                    keyWord : searchKeyword
+                }
+            });
+            setMovies(searchResponse.data);
+
+        } catch (e) {
+            console.error(e);
         }
-        fetchData();
-    }, []);
+    }
 
     return (
         <div className="App">
-            <header className="App-header">
-                <div className="App-logo">
-                    <h1>LAHO-PEDIA</h1>
-                </div>
-            </header>
+            <Header handleSearchClick={handleSearchClick}/>
 
-            <Routers>
-                <nav className="Nav">
-                    <ul>
-                        <li><Link to="/myPage">마이페이지</Link></li>
-                        <li><Link to="/login">로그인</Link></li>
-                    </ul>
-                </nav>
-                    <Switch>
-                        <Route exact path="/">{input}</Route>
-                        <Route path="/myPage"><Mypage/></Route>
-                        <Route path="/login"><Login/></Route>
-                    </Switch>
-            </Routers>
-
-
+            <div className="page">
+                <Switch>
+                    <Route exact path="/"><Main movies={movies}/></Route>
+                    <Route path="/myPage"><MyPage/></Route>
+                    <Route path="/login"><Login/></Route>
+                </Switch>
+            </div>
         </div>
     );
 }
