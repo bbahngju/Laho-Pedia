@@ -12,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,7 +31,7 @@ public class IndexController {
 
     @GetMapping("/")
     @ResponseBody
-    public String index(HttpServletRequest request) throws IOException {
+    public String index() throws IOException {
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat dayFormat = new SimpleDateFormat("yyyyMMdd");
 
@@ -50,9 +49,8 @@ public class IndexController {
     @GetMapping("/api/search")
     @ResponseBody
     public String search(HttpServletRequest request) throws IOException {
-        logger.info("---------------start search keyWord!---------------");
 
-        String keyWord = request.getParameter("keyWord").replaceAll(" ","");
+        String keyWord = request.getParameter("keyWord").replaceAll(" ","").replaceAll("[^\\uAC00-\\uD7A30-9a-zA-Z]", "");
         String urlBuilder = "http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2" +
                 "&detail=" + "Y" +
                 "&query=" + "\"" + keyWord + "\"" +
@@ -132,7 +130,7 @@ public class IndexController {
         while ((line = rd.readLine()) != null) {
             line = line.replaceFirst("\"\"", "\"");
             line = line.replaceFirst("\"\"", "\"");
-
+            line = line.replaceAll("!HS", "").replaceAll("!HE", "");
             sb.append(line);
         }
         rd.close();

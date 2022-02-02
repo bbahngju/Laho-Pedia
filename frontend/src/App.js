@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Login from "./page/Login";
 import MyPage from "./page/MyPage";
 import axios from "axios";
-import {Route, Switch, Link} from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import Header from "./layout/Header";
 import Main from "./page/Main";
 import 'antd/dist/antd.css';
 
 function App() {
-    const baseUrl = "http://localhost:8080"
+    const baseUrl = "http://localhost:8080";
     const [movies, setMovies] = useState();
-
 
     async function handleSearchClick(searchKeyword) {
         try {
