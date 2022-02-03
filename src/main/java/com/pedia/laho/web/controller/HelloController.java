@@ -1,4 +1,4 @@
-package com.pedia.laho.web;
+package com.pedia.laho.web.controller;
 
 import com.pedia.laho.web.dto.HelloResponseDto;
 import org.springframework.web.bind.annotation.GetMapping;

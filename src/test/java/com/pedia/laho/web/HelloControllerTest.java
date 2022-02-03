@@ -1,5 +1,6 @@
 package com.pedia.laho.web;
 
+import com.pedia.laho.web.controller.HelloController;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

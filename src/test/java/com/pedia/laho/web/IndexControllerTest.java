@@ -1,10 +1,8 @@
 package com.pedia.laho.web;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.pedia.laho.web.dto.SearchResponseDto;
+import com.pedia.laho.web.controller.IndexController;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +62,7 @@ public class IndexControllerTest {
 
         logger.info(jsonObject.toString());
         //when
-        String all = indexController.searchParsing(jsonObject.toString());
+        String all = ResponseParsing.searchParsing(jsonObject.toString());
 
         //then
         /* assertThat(all.get(0).getTitle()).isEqualTo(title);
