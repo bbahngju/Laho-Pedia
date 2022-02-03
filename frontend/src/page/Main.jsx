@@ -23,14 +23,16 @@ export default function Main({movies}) {
         boxOfficeData()
     }, []);
 
-    console.log(boxOffices);
-    console.log(movies);
+    if(!movies && !boxOffices) {
+        return (
+            <Spin tip="Loading..."/>
+        );
+    }
+
+    //MoviesID 가져오기
     return (
-        <div>
-            {movies ? <Space wrap>{movies.map(movie => <MovieItem movie={movie}/>)}</Space>
-                : boxOffices ? <Space wrap>{boxOffices.map(boxOffice => <BoxOfficeItem boxOffice={boxOffice}/>)}</Space>
-                    : <Spin tip="Loading..."/>}
-        </div>
+            movies ? <Space wrap>{movies.map(movie => <MovieItem movie={movie}/>)}</Space>
+                : <Space wrap>{boxOffices.map(boxOffice => <BoxOfficeItem boxOffice={boxOffice}/>)}</Space>
     )
 }
 
