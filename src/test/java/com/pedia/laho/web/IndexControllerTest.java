@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,20 +34,23 @@ public class IndexControllerTest {
     }
 
     @Test
-    public void JSON_데이터_파싱() {
+    public void KMDB_포스터_줄거리_파싱() throws IOException {
         //given
-        IndexController indexController = new IndexController();
-
-        String title = "해리 포터와 불사조 기사단";
-        String prodYear = "2007";
-        String nation = "영국,미국";
         String posters = "http://file.koreafilm.or.kr/thm/02/00/00/95/tn_DPF000126.jpg";
+        String plot = "이것은 줄거리입니다만 :)";
+
+        JsonObject plotTextObj = new JsonObject();
+        plotTextObj.addProperty("plotText", plot);
+
+        JsonArray plotArr = new JsonArray();
+        plotArr.add(plotTextObj);
+
+        JsonObject plotsObj = new JsonObject();
+        plotsObj.add("plot", plotArr);
 
         JsonObject resultObj = new JsonObject();
-        resultObj.addProperty("title", title);
-        resultObj.addProperty("prodYear", prodYear);
-        resultObj.addProperty("nation", nation);
         resultObj.addProperty("posters", posters);
+        resultObj.add("plots", plotsObj);
 
         JsonArray resultArr = new JsonArray();
         resultArr.add(resultObj);
@@ -61,14 +66,12 @@ public class IndexControllerTest {
         jsonObject.add("Data", dataArr);
 
         logger.info(jsonObject.toString());
+
         //when
-        String all = ResponseParsing.searchParsing(jsonObject.toString());
+        Map<String, String> all = ResponseParsing.posterAndplotParsing(jsonObject.toString());
 
         //then
-        /* assertThat(all.get(0).getTitle()).isEqualTo(title);
-        assertThat(all.get(0).getProdYear()).isEqualTo(prodYear);
-        assertThat(all.get(0).getNation()).isEqualTo(nation);
-        assertThat(all.get(0).getPosters()).isEqualTo(posters);*/
-
+        assertThat(all.get("posters")).isEqualTo(posters);
+        assertThat(all.get("plot")).isEqualTo(plot);
     }
 }

@@ -6,7 +6,7 @@ const { Meta } = Card;
 
 export default function BoxOfficeItem({boxOffice}) {
     const imageUrl  =  boxOffice.posters?.split('|')[0];
-    const {rank, title, prodYear} = boxOffice || {};
+    const {rank, title, openDt} = boxOffice || {};
 
     return (
         <Badge count={rank} status="success"><Card
@@ -14,7 +14,7 @@ export default function BoxOfficeItem({boxOffice}) {
             style={{ width: 200 }}
             cover={<img alt="example" src={imageUrl} />}
         >
-            <Meta title={title} description={`${prodYear}`} />
+            <Meta title={title} description={`${openDt}`} />
         </Card></Badge>
     );
 }

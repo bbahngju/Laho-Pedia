@@ -4,92 +4,121 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.pedia.laho.web.dto.BoxOfficeResponseDto;
-import com.pedia.laho.web.dto.SearchResponseDto;
+import com.pedia.laho.web.dto.MovieResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-//TODO: 리팩토링 필요
 public class ResponseParsing {
-    private static Logger logger = Logger.getLogger(ResponseParsing.class.getName());
 
-    //TODO: void 설정
-    public static String boxOfficeParsing(String jString, String key) throws IOException {
-        List<BoxOfficeResponseDto> result = new ArrayList<>();
+    private static Logger logger = Logger.getLogger(ResponseParsing.class.getName());
+    private static String kmdbUrl = "http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2";
+
+    public static String boxOfficeMovieInfoParsing(String jString, String key) throws IOException {
+        List<MovieResponseDto> movieInfoList = new ArrayList<>();
 
         JsonObject jObject = JsonParser.parseString(jString).getAsJsonObject();
-        JsonObject jObjectObject= jObject.getAsJsonObject("boxOfficeResult");
-        JsonArray jArray = jObjectObject.getAsJsonArray("dailyBoxOfficeList");
+        JsonObject boxOfficeResult= jObject.getAsJsonObject("boxOfficeResult");
+        JsonArray dailyBoxOfficeList = boxOfficeResult.getAsJsonArray("dailyBoxOfficeList");
 
-        for(Object o : jArray) {
-            BoxOfficeResponseDto boxOfficeResponseDto;
-            JsonObject obj = (JsonObject) o;
+        for(Object boxOffice : dailyBoxOfficeList) {
+            MovieResponseDto movieResponseDto;
+            JsonObject obj = (JsonObject) boxOffice;
 
+            String movieId = obj.get("movieCd").getAsString();
             String rank = obj.get("rank").getAsString();
             String title = obj.get("movieNm").getAsString();
-            String prodYear = obj.get("openDt").getAsString();
+            String openDt = obj.get("openDt").getAsString();
 
-            //TODO: 포스터를 얻기 위한 과정 (리팩토링 필요)
-            String keyWord = title.replaceAll(" ","").replaceAll("[^\\uAC00-\\uD7A30-9a-zA-Z]", "");
-            String url = "http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2" +
-                    "&detail=" + "Y" +
-                    "&query=" + "\"" + keyWord + "\"" +
-                    "&releaseDts=" + prodYear +
-                    "&ServiceKey=" + key;
+            logger.info("title " + title + "open: " + openDt + "key " + key);
+            String posterAndPlotResponse = posterAndPlotResponse(title, openDt, key);
+            Map<String, String> posterAndPlot = posterAndplotParsing(posterAndPlotResponse);
 
-            logger.info(key);
-            String apiResponse = ApiRequest.apiRequest(url);
+            String posters = posterAndPlot.get("posters");
+            String plot = posterAndPlot.get("plot");
 
-            logger.info("apiResponse" + apiResponse);
+            movieResponseDto = MovieResponseDto.builder()
+                    .movieId(movieId).rank(rank).title(title)
+                    .openDt(openDt).posters(posters).plot(plot)
+                    .build();
 
-            JsonObject jO = JsonParser.parseString(apiResponse).getAsJsonObject();
-            JsonArray jA = jO.getAsJsonArray("Data");
-            JsonObject jAO = jA.get(0).getAsJsonObject();
-            JsonArray jAOA = jAO.getAsJsonArray("Result");
-
-            Object ob = jAOA.get(0);
-            JsonObject jobj= (JsonObject) ob;
-            String posters = jobj.get("posters").getAsString();
-
-            boxOfficeResponseDto = new BoxOfficeResponseDto(rank.trim(), title.trim(), prodYear.trim(), posters.trim());
-            result.add(boxOfficeResponseDto);
+            movieInfoList.add(movieResponseDto);
         }
 
-        String boxResult = new Gson().toJson(result);
-        logger.info(boxResult);
-
-        //TODO: Domain 불러서 넣기
-        return boxResult;
+        return new Gson().toJson(movieInfoList);
     }
 
-    public static String searchParsing(String jString) {
-        List<SearchResponseDto> result = new ArrayList<>();
+    public static String searchMovieInfoParsing(String jString, String key) throws IOException {
+        List<MovieResponseDto> movieInfoList = new ArrayList<>();
 
         JsonObject jObject = JsonParser.parseString(jString).getAsJsonObject();
-        JsonArray jArray = jObject.getAsJsonArray("Data");
-        JsonObject jArrayObject = jArray.get(0).getAsJsonObject();
-        JsonArray jArrayObjectArray = jArrayObject.getAsJsonArray("Result");
+        JsonObject movieResult= jObject.getAsJsonObject("movieListResult");
+        JsonArray movieList = movieResult.getAsJsonArray("movieList");
 
-        for (Object o : jArrayObjectArray) {
-            SearchResponseDto searchResponseDto;
-            JsonObject obj= (JsonObject) o;
+        for(Object movie : movieList) {
+            MovieResponseDto movieResponseDto;
+            JsonObject obj = (JsonObject) movie;
 
-            String title = obj.get("title").getAsString();
-            String prodYear = obj.get("prodYear").getAsString();
-            String nation = obj.get("nation").getAsString();
-            String posters = obj.get("posters").getAsString();
+            String movieId = obj.get("movieCd").getAsString();
+            String title = obj.get("movieNm").getAsString();
+            String openDt = obj.get("openDt").getAsString();
+            String nation = obj.get("nationAlt").getAsString();
 
-            searchResponseDto = new SearchResponseDto(title.trim(), prodYear.trim(), nation.trim(), posters.trim());
-            result.add(searchResponseDto);
+            String posterAndPlotResponse = posterAndPlotResponse(title, openDt, key);
+            logger.info(posterAndPlotResponse);
+            Map<String, String> posterAndPlot = posterAndplotParsing(posterAndPlotResponse);
+
+            String posters = posterAndPlot.get("posters");
+            String plot = posterAndPlot.get("plot");
+
+            movieResponseDto = MovieResponseDto.builder()
+                    .movieId(movieId).title(title).openDt(openDt)
+                    .nation(nation).posters(posters).plot(plot)
+                    .build();
+
+            movieInfoList.add(movieResponseDto);
         }
 
-        String searchResult = new Gson().toJson(result);
-        logger.info(searchResult);
-        return searchResult;
+        return new Gson().toJson(movieInfoList);
+    }
+
+    public static String posterAndPlotResponse(String title, String openDt, String key) throws IOException {
+        String keyWord = title.replaceAll(" ","").replaceAll("[^\\uAC00-\\uD7A30-9a-zA-Z]", "");
+        String url = kmdbUrl +
+                "&ServiceKey=" + key +
+                "&detail=" + "Y" +
+                "&query=" + "\"" + keyWord + "\"" +
+                "&releaseDts=" + openDt;
+
+        return ApiRequest.apiRequest(url);
+    }
+
+    public static Map<String, String> posterAndplotParsing(String apiResponse) {
+
+        Map<String, String> result = new HashMap<>();
+
+        logger.info(apiResponse);
+        JsonObject jObject = JsonParser.parseString(apiResponse).getAsJsonObject();
+        JsonArray data = jObject.getAsJsonArray("Data");
+        JsonObject dataObject = data.get(0).getAsJsonObject();
+        JsonArray resultArray = dataObject.getAsJsonArray("Result");
+
+        JsonObject obj= resultArray.get(0).getAsJsonObject();
+
+        String posters = obj.get("posters").getAsString();
+        String plot = obj.getAsJsonObject("plots")
+                .getAsJsonArray("plot").get(0).getAsJsonObject()
+                .get("plotText").getAsString();
+
+        result.put("posters", posters);
+        result.put("plot", plot);
+
+        return result;
     }
 }

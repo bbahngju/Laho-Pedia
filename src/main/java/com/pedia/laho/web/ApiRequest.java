@@ -1,11 +1,5 @@
 package com.pedia.laho.web;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.pedia.laho.web.dto.BoxOfficeResponseDto;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,9 +28,9 @@ public class ApiRequest {
         while ((line = rd.readLine()) != null) {
             line = line.replaceFirst("\"\"", "\"");
             line = line.replaceFirst("\"\"", "\"");
-            line = line.replaceAll("!HS", "").replaceAll("!HE", "");
             sb.append(line);
         }
+
         rd.close();
         conn.disconnect();
 

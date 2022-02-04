@@ -1,13 +1,10 @@
 package com.pedia.laho.domain.director;
 
-import com.pedia.laho.domain.junctionTable.MovieDirector;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -16,7 +13,6 @@ public class Director {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DIRECTOR_ID")
     private Long id;
 
     private Long number;
