@@ -1,14 +1,20 @@
 import React from 'react';
 import { Card } from 'antd';
+import { Badge } from 'antd';
+
+const { Meta } = Card;
 
 export default function BoxOfficeItem({boxOffice}) {
-    const {rank, title, prodYear} = boxOffice || {};
+    const imageUrl  =  boxOffice.posters?.split('|')[0];
+    const {rank, title, openDt} = boxOffice || {};
 
     return (
-        <div>
-            <Card title={title} bordered={false} style={{ width: 300 }}>
-                <p>{rank} / {prodYear}</p>
-            </Card>
-        </div>
+        <Badge count={rank} status="success"><Card
+            hoverable
+            style={{ width: 200 }}
+            cover={<img alt="example" src={imageUrl} />}
+        >
+            <Meta title={title} description={`${openDt}`} />
+        </Card></Badge>
     );
 }
