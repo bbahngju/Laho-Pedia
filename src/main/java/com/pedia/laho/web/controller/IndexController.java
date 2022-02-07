@@ -52,6 +52,7 @@ public class IndexController {
                 "&movieNm=" + keyWord;
 
         String response = ApiRequest.apiRequest(urlBuilder);
+        logger.info(response);
         return ResponseParsing.searchMovieInfoParsing(response, kmdbKey);
     }
 
