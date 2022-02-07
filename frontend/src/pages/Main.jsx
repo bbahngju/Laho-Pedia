@@ -1,19 +1,19 @@
 import {useEffect, useState} from "react";
-import MovieItem from "../component/MovieItem"
+import MovieItem from "../components/MovieItem"
 import axios from "axios";
 import { Space } from 'antd';
-import BoxOfficeItem from "../component/BoxOfficeItem";
+import BoxOfficeItem from "../components/BoxOfficeItem";
 import { Spin } from 'antd';
 
 export default function Main({movies}) {
-    const baseUrl = "http://localhost:8080"
-    const [boxOffices, setBoxOffies] = useState();
+    const [boxOffices, setBoxOffices] = useState();
 
+    const baseUrl = "http://localhost:8080"
     useEffect(() => {
         async function boxOfficeData() {
             try {
                 const response = await axios.get(baseUrl + "/");
-                setBoxOffies(response.data);
+                setBoxOffices(response.data);
             }
             catch (e) {
                 console.error(e);

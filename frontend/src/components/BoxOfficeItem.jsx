@@ -7,6 +7,7 @@ const { Meta } = Card;
 export default function BoxOfficeItem({boxOffice}) {
     const imageUrl  =  boxOffice.posters?.split('|')[0];
     const {rank, title, openDt} = boxOffice || {};
+    const {movieId, plot} = boxOffice || {};
 
     return (
         <Badge count={rank} status="success"><Card

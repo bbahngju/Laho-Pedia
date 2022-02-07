@@ -1,34 +1,18 @@
 import React, { useState } from 'react';
 import './App.css';
-import Login from "./page/Login";
-import MyPage from "./page/MyPage";
-import axios from "axios";
+import Login from "./pages/Login";
+import MyPage from "./pages/MyPage";
 import { Route, Switch } from "react-router-dom";
 import Header from "./layout/Header";
-import Main from "./page/Main";
+import Main from "./pages/Main";
 import 'antd/dist/antd.css';
 
 function App() {
-    const baseUrl = "http://localhost:8080";
     const [movies, setMovies] = useState();
-
-    async function handleSearchClick(searchKeyword) {
-        try {
-            const searchResponse = await axios.get( baseUrl + "/api/search", {
-                params : {
-                    keyWord : searchKeyword
-                }
-            });
-            setMovies(searchResponse.data);
-
-        } catch (e) {
-            console.error(e);
-        }
-    }
 
     return (
         <div className="App">
-            <Header handleSearchClick={handleSearchClick}/>
+            <Header setMovies={setMovies}/>
 
             <div className="page">
                 <Switch>
