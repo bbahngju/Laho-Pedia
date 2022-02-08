@@ -6,6 +6,7 @@ import { Route, Switch } from "react-router-dom";
 import Header from "./layout/Header";
 import Main from "./pages/Main";
 import 'antd/dist/antd.css';
+import DetailPage from "./pages/DetailPage";
 
 function App() {
     const [movies, setMovies] = useState();
@@ -19,6 +20,7 @@ function App() {
                     <Route exact path="/"><Main movies={movies}/></Route>
                     <Route path="/myPage"><MyPage/></Route>
                     <Route path="/login"><Login/></Route>
+                    <Route path="/details"><DetailPage/></Route>
                 </Switch>
             </div>
         </div>

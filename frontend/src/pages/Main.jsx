@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import MovieItem from "../components/MovieItem"
 import axios from "axios";
 import { Space } from 'antd';
-import BoxOfficeItem from "../components/BoxOfficeItem";
 import { Spin } from 'antd';
 
 export default function Main({movies}) {
@@ -32,7 +31,7 @@ export default function Main({movies}) {
     //MoviesID 가져오기
     return (
             movies ? <Space wrap>{movies.map(movie => <MovieItem movie={movie}/>)}</Space>
-                : <Space wrap>{boxOffices.map(boxOffice => <BoxOfficeItem boxOffice={boxOffice}/>)}</Space>
+                : <Space wrap>{boxOffices.map(boxOffice => <MovieItem movie={boxOffice}/>)}</Space>
     )
 }
 
