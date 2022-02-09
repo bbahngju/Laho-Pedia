@@ -1,21 +1,48 @@
+import {useEffect, useState} from "react";
 import {useLocation} from 'react-router-dom'
-import {Typography, Image} from 'antd'
-
+import axios from "axios";
+import { Spin } from 'antd';
+import MovieDetailItem from "../components/MovieDetailItem";
 
 export default function DetailPage() {
     const location = useLocation();
-    const plot = location.state.plot
-    const imageUrl = location.state.imageUrl
-    const { Title, Paragraph} = Typography;
+    const {movieId} = location.state;
+    const [movieDetails, setMovieDetails] = useState();
+
+    const baseUrl = "http://localhost:8080"
+    useEffect(() => {
+        if(!movieId) {
+            return (
+                <Spin tip="Loading..."/>
+            );
+        }
+
+        async function movieDetails() {
+            try {
+                const response = await axios.get(baseUrl + "/api/details", {
+                    params : {
+                        movieId : movieId
+                    }
+                });
+                setMovieDetails(response.data);
+                console.log(response.data);
+            }
+            catch (e) {
+                console.error(e);
+            }
+        }
+
+        movieDetails()
+    }, [movieId]);
+
+    if(!movieDetails) {
+        return (
+            <Spin tip="Loading..."/>
+        );
+    }
 
     return (
-        <Typography style={{ padding: '30px 0 0 0' }}>
-            <Title>Introduction</Title>
-
-            <Image width={180} src={imageUrl}/>
-
-            <Title>기본 정보</Title>
-            <Paragraph>{plot}</Paragraph>
-            </Typography>
+        <div>{movieDetails.map(movieDetails => <MovieDetailItem details={movieDetails} station={location.state}/>)}</div>
     )
+
 }

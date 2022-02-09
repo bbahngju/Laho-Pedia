@@ -5,7 +5,7 @@ import MyPage from "./pages/MyPage";
 import { Route, Switch } from "react-router-dom";
 import Header from "./layout/Header";
 import Main from "./pages/Main";
-import 'antd/dist/antd.css';
+import 'antd/dist/antd.min.css';
 import DetailPage from "./pages/DetailPage";
 
 function App() {
@@ -18,9 +18,9 @@ function App() {
             <div className="page">
                 <Switch>
                     <Route exact path="/"><Main movies={movies}/></Route>
-                    <Route path="/myPage"><MyPage/></Route>
-                    <Route path="/login"><Login/></Route>
-                    <Route path="/details"><DetailPage/></Route>
+                    <Route exact path="/myPage"><MyPage/></Route>
+                    <Route exact path="/login"><Login/></Route>
+                    <Route exact path="/details"><DetailPage/></Route>
                 </Switch>
             </div>
         </div>
