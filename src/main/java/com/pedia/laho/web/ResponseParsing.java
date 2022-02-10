@@ -6,18 +6,21 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.pedia.laho.web.dto.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class ResponseParsing {
 
     private static final Logger logger = Logger.getLogger(ResponseParsing.class.getName());
+    private static SimpleDateFormat beforeDateFormat = new SimpleDateFormat("yyyyMMdd");
+    private static SimpleDateFormat afterDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static String boxOfficeMovieInfoParsing(String jString, String key) throws IOException {
+    public static String boxOfficeMovieInfoParsing(String jString, String key) {
         List<MovieResponseDto> movieInfoList = new ArrayList<>();
 
         JsonObject jObject = JsonParser.parseString(jString).getAsJsonObject();
@@ -46,14 +49,14 @@ public class ResponseParsing {
                         .build();
 
                 movieInfoList.add(movieResponseDto);
-            } catch (NullPointerException nullPointerException) {
-                logger.info(nullPointerException.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return new Gson().toJson(movieInfoList);
     }
 
-    public static String searchMovieInfoParsing(String jString, String key) throws IOException {
+    public static String searchMovieInfoParsing(String jString, String key) {
         List<MovieResponseDto> movieInfoList = new ArrayList<>();
 
         JsonObject jObject = JsonParser.parseString(jString).getAsJsonObject();
@@ -72,6 +75,8 @@ public class ResponseParsing {
                 movieId = obj.get("movieCd").getAsString();
                 title = obj.get("movieNm").getAsString();
                 openDt = obj.get("openDt").getAsString();
+                Date date = beforeDateFormat.parse(openDt);
+                openDt = afterDateFormat.format(date);
                 nation = obj.get("nationAlt").getAsString();
 
                 posterAndPlotResponse = posterAndPlotResponse(title, openDt, key);
@@ -86,8 +91,8 @@ public class ResponseParsing {
                         .build();
 
                 movieInfoList.add(movieResponseDto);
-            } catch (NullPointerException nullPointerException) {
-                logger.info(nullPointerException.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -101,54 +106,62 @@ public class ResponseParsing {
         JsonObject movieInfoResult= jObject.getAsJsonObject("movieInfoResult");
         JsonObject movieInfo = movieInfoResult.getAsJsonObject("movieInfo");
 
-        String title = movieInfo.get("movieNm").getAsString();
-        String showTm = movieInfo.get("showTm").getAsString();
-        String openDt = movieInfo.get("openDt").getAsString();
+        try {
+            String title = movieInfo.get("movieNm").getAsString();
+            String showTm = movieInfo.get("showTm").getAsString();
+            String openDt = movieInfo.get("openDt").getAsString();
+            Date date = beforeDateFormat.parse(openDt);
+            openDt = afterDateFormat.format(date);
 
-        List<NationInfo> nations = new ArrayList<>();
-        JsonArray nationsArr = movieInfo.getAsJsonArray("nations");
-        for(Object o : nationsArr) {
-            JsonObject nationObj = (JsonObject) o;
-            String nation = nationObj.get("nationNm").getAsString();
+            JsonObject auditsObj = movieInfo.getAsJsonArray("audits").get(0).getAsJsonObject();
+            String watchGrade = auditsObj.get("watchGradeNm").getAsString();
 
-            nations.add(new NationInfo(nation));
+            List<NationInfo> nations = new ArrayList<>();
+            JsonArray nationsArr = movieInfo.getAsJsonArray("nations");
+            for(Object o : nationsArr) {
+                JsonObject nationObj = (JsonObject) o;
+                String nation = nationObj.get("nationNm").getAsString();
+
+                nations.add(new NationInfo(nation));
+            }
+
+            List<GenreInfo> genres = new ArrayList<>();
+            JsonArray genresArr = movieInfo.getAsJsonArray("genres");
+            for(Object o : genresArr) {
+                JsonObject genreObj = (JsonObject) o;
+                String genre = genreObj.get("genreNm").getAsString();
+
+                genres.add(new GenreInfo(genre));
+            }
+
+            List<DirectorInfo> directors = new ArrayList<>();
+            JsonArray directorsArr = movieInfo.getAsJsonArray("directors");
+            for(Object o : directorsArr) {
+                JsonObject directorObj = (JsonObject) o;
+                String director = directorObj.get("peopleNm").getAsString();
+
+                directors.add(new DirectorInfo(director));
+            }
+
+            List<ActorInfo> actors = new ArrayList<>();
+            JsonArray actorsArr = movieInfo.getAsJsonArray("actors");
+            for(Object o : actorsArr) {
+                JsonObject actorObj = (JsonObject) o;
+                String actor = actorObj.get("peopleNm").getAsString();
+                String cast = actorObj.get("cast").getAsString();
+
+                actors.add(new ActorInfo(actor, cast));
+            }
+
+            movieInfoList.add(MovieDetailResponseDto.builder()
+                    .title(title).showTm(showTm).openDt(openDt)
+                    .nations(nations).genres(genres).directors(directors)
+                    .actors(actors).watchGrade(watchGrade).build());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        List<GenreInfo> genres = new ArrayList<>();
-        JsonArray genresArr = movieInfo.getAsJsonArray("genres");
-        for(Object o : genresArr) {
-            JsonObject genreObj = (JsonObject) o;
-            String genre = genreObj.get("genreNm").getAsString();
-
-            genres.add(new GenreInfo(genre));
-        }
-
-        List<DirectorInfo> directors = new ArrayList<>();
-        JsonArray directorsArr = movieInfo.getAsJsonArray("directors");
-        for(Object o : directorsArr) {
-            JsonObject directorObj = (JsonObject) o;
-            String director = directorObj.get("peopleNm").getAsString();
-
-            directors.add(new DirectorInfo(director));
-        }
-
-        List<ActorInfo> actors = new ArrayList<>();
-        JsonArray actorsArr = movieInfo.getAsJsonArray("actors");
-        for(Object o : actorsArr) {
-            JsonObject actorObj = (JsonObject) o;
-            String actor = actorObj.get("peopleNm").getAsString();
-            String cast = actorObj.get("cast").getAsString();
-
-            actors.add(new ActorInfo(actor, cast));
-        }
-
-        movieInfoList.add(MovieDetailResponseDto.builder()
-                .title(title).showTm(showTm).openDt(openDt)
-                .nations(nations).genres(genres).directors(directors)
-                .actors(actors).build());
-        String result = new Gson().toJson(movieInfoList);
-        logger.info("movieInfoList : " + result);
-        return result;
+        return new Gson().toJson(movieInfoList);
     }
 
     public static String posterAndPlotResponse(String title, String openDt, String key) throws IOException {
@@ -188,8 +201,8 @@ public class ResponseParsing {
             result.put("plot", plot);
 
             return result;
-        } catch (NullPointerException nullPointerException) {
-            logger.info(nullPointerException.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return result;
