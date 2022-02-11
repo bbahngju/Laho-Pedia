@@ -9,6 +9,7 @@ import java.net.URL;
 public class ApiRequest {
 
     public static String apiRequest(String urlBuilder) throws IOException {
+
         URL url = new URL(urlBuilder);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -26,10 +27,9 @@ public class ApiRequest {
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = rd.readLine()) != null) {
-            line = line.replaceFirst("\"\"", "\"");
-            line = line.replaceFirst("\"\"", "\"");
             sb.append(line);
         }
+
 
         rd.close();
         conn.disconnect();

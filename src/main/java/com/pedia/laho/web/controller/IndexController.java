@@ -55,4 +55,18 @@ public class IndexController {
         return ResponseParsing.searchMovieInfoParsing(response, kmdbKey);
     }
 
+    @GetMapping("/api/details")
+    @ResponseBody
+    public String detailPage(HttpServletRequest request) throws IOException {
+        String id = request.getParameter("movieId");
+        logger.info(id);
+        String urlBuilder = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?" +
+                "key=" + kobisKey +
+                "&movieCd=" + id;
+
+        String response = ApiRequest.apiRequest(urlBuilder);
+        logger.info(response);
+        return ResponseParsing.movieDetailsParsing(response);
+    }
+
 }

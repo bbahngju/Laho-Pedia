@@ -34,7 +34,7 @@ public class IndexControllerTest {
     }
 
     @Test
-    public void KMDB_포스터_줄거리_파싱() throws IOException {
+    public void KMDB_포스터_줄거리_파싱() {
         //given
         String posters = "http://file.koreafilm.or.kr/thm/02/00/00/95/tn_DPF000126.jpg";
         String plot = "이것은 줄거리입니다만 :)";
@@ -62,7 +62,7 @@ public class IndexControllerTest {
         dataArr.add(dataObj);
 
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("Query", "\"해리포터\"");
+        jsonObject.addProperty("Query", "해리포터");
         jsonObject.add("Data", dataArr);
 
         logger.info(jsonObject.toString());
@@ -73,5 +73,14 @@ public class IndexControllerTest {
         //then
         assertThat(all.get("posters")).isEqualTo(posters);
         assertThat(all.get("plot")).isEqualTo(plot);
+    }
+
+    @Test
+    public void 영화_상세정보_파싱() {
+        //given
+
+        //when
+
+        //then
     }
 }

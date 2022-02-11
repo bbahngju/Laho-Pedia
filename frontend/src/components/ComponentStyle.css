@@ -1,0 +1,28 @@
+.page {
+    margin: 30px calc(50% - 335px);
+}
+
+article.ant-typography {
+    width: 670px;
+    border: 1px solid gray;
+    padding: 30px;
+    border-radius: 2%;
+}
+
+.movie-details-form {
+    box-sizing: border-box;
+    width: 600px;
+    margin: auto;
+}
+.movie-details-short-info {
+    margin-left: 30px;
+}
+
+.movie-details-image, .movie-details-short-info{
+    display: inline-block;
+}
+
+.movie-details-second,
+.movie-details-third {
+    margin-top: 30px;
+}
